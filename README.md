@@ -1,3 +1,1 @@
-# Student Management System
-
-2023 USTC Database Lab 2
+# USTC Database Lab 2023Spring
