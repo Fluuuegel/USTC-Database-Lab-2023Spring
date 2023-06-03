@@ -52,8 +52,8 @@ class customer_account(models.Model):
         unique_together = (('customer_id', 'account_id'),)
 
 class customer_loan(models.Model):
-    client_id = models.ForeignKey('Client', to_field='id', on_delete=models.RESTRICT)
+    customer_id = models.ForeignKey('Customer', to_field='id', on_delete=models.RESTRICT)
     loan_id = models.ForeignKey('Loan', to_field='id', on_delete=models.RESTRICT)
 
     class Meta:
-        unique_together = (('client_id', 'loan_id'),)
+        unique_together = (('customer_id', 'loan_id'),)
