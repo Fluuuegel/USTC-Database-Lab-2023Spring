@@ -6,15 +6,21 @@ class Branch(models.Model):
     city = models.CharField(max_length=255, null=True, blank=True)
     possession = models.DecimalField(max_digits=28, decimal_places=8)
 
+    def __str__(self):
+        return f"{self.name}"
+
 class Staff(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.CharField(max_length=127, primary_key=True)
     name = models.CharField(max_length=127, null=True, blank=True)
     phone_number = models.CharField(max_length=255, null=True, blank=True)
     address = models.CharField(max_length=255, null=True, blank=True)
     mail = models.CharField(max_length=255, null=True, blank=True)
 
+    def __str__(self):
+        return f"{self.id} {self.name} {self.phone_number} {self.address} {self.mail}"
+
 class Customer(models.Model):
-    id = models.IntegerField(primary_key=True)
+    id = models.CharField(max_length=127, primary_key=True)
     name = models.CharField(max_length=127, null=True, blank=True)
     phone_number = models.CharField(max_length=255, null=True, blank=True)
     address = models.CharField(max_length=255, null=True, blank=True)
@@ -22,6 +28,10 @@ class Customer(models.Model):
     contact_name = models.CharField(max_length=127, null=True, blank=True)
     contact_phone_number = models.CharField(max_length=255, null=True, blank=True)
     contact_relationship = models.CharField(max_length=127, null=True, blank=True)
+    
+    def __str__(self):
+        return f"{self.id} {self.name} {self.phone_number} {self.address} {self.mail} {self.contact_name} {self.contact_phone_number} {self.contact_relationship}"
+    
 
 class Account(models.Model):
     id = models.CharField(max_length=255, primary_key=True)

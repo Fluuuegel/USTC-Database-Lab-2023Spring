@@ -18,5 +18,5 @@ class Gen:
 if __name__ == "__main__":
     g = Gen()
     data = g.staff(5)
-    with open("staff.csv", "w") as f:
+    with open("../../staff.csv", "w") as f:
         f.write(data)
