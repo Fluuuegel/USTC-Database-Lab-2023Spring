@@ -6,12 +6,12 @@
 </template>
 
 <script>
-import Header from "@/components/Header";
+import AppHeader from "@/components/AppHeader.vue";
 
 export default {
   name: 'App',
   components: {
-    Header,
+    AppHeader,
   },
   computed: {
     isHome() {

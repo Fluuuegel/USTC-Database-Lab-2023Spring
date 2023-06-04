@@ -1,15 +1,15 @@
 import {createWebHistory, createRouter} from "vue-router";
-import Customer from "@/views/Customer";
+import Client from "@/views/Client.vue";
 
 const routes = [
     {
         path: "/",
-        redirect: "/customer",
+        redirect: "/client",
     },
     {
-        path: "/customer",
-        name: "Customer",
-        component: Customer
+        path: "/client",
+        name: "Client",
+        component: Client
     }
 ];
 
