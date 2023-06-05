@@ -19,7 +19,7 @@ class Staff(models.Model):
     def __str__(self):
         return f"{self.id} {self.name} {self.phone_number} {self.address} {self.mail}"
 
-class Customer(models.Model):
+class Client(models.Model):
     id = models.CharField(max_length=127, primary_key=True)
     name = models.CharField(max_length=127, null=True, blank=True)
     phone_number = models.CharField(max_length=255, null=True, blank=True)
@@ -54,16 +54,16 @@ class Pay(models.Model):
     amount = models.DecimalField(max_digits=28, decimal_places=8)
     loan_id = models.ForeignKey('Loan', to_field='id', on_delete=models.RESTRICT)
 
-class customer_account(models.Model):
-    customer_id = models.ForeignKey('Customer', to_field='id', on_delete=models.RESTRICT)
+class client_account(models.Model):
+    client_id = models.ForeignKey('Client', to_field='id', on_delete=models.RESTRICT)
     account_id = models.ForeignKey('Account', to_field='id', on_delete=models.RESTRICT)
 
     class Meta:
-        unique_together = (('customer_id', 'account_id'),)
+        unique_together = (('client_id', 'account_id'),)
 
-class customer_loan(models.Model):
-    customer_id = models.ForeignKey('Customer', to_field='id', on_delete=models.RESTRICT)
+class client_loan(models.Model):
+    client_id = models.ForeignKey('Client', to_field='id', on_delete=models.RESTRICT)
     loan_id = models.ForeignKey('Loan', to_field='id', on_delete=models.RESTRICT)
 
     class Meta:
-        unique_together = (('customer_id', 'loan_id'),)
+        unique_together = (('client_id', 'loan_id'),)

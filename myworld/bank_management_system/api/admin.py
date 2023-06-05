@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Branch, Staff, Customer
+from .models import Branch, Staff, Client
 
 class BranchAdmin(admin.ModelAdmin):
   list_display = ("name",)
@@ -7,9 +7,9 @@ class BranchAdmin(admin.ModelAdmin):
 class StaffAdmin(admin.ModelAdmin):
   list_display = ("id", "name", "phone_number", "address", "mail", )
 
-class CustomerAdmin(admin.ModelAdmin):
+class ClientAdmin(admin.ModelAdmin):
   list_display = ("id", "name", "phone_number", "address", "mail", "contact_name", "contact_phone_number", "contact_relationship", )
 
 admin.site.register(Branch, BranchAdmin)
 admin.site.register(Staff, StaffAdmin)
-admin.site.register(Customer, CustomerAdmin)
+admin.site.register(Client, ClientAdmin)
