@@ -2,7 +2,7 @@ import faker
 
 class Gen:
     def __init__(self):
-        self.fake = faker.Faker(locale='zh_CN')
+        self.fake = faker.Faker(locale='ja_JP')
 
     def staff(self, num):
         data = ""
@@ -18,7 +18,7 @@ class Gen:
     def client(self, num):
         data = ""
 
-        relationship = ["父亲", "母亲", "子女", "星怒", "其它"]
+        relationship = ["父亲", "母亲", "子女", "其它"]
 
         for _ in range(num):
             id = self.fake.unique.ssn()
