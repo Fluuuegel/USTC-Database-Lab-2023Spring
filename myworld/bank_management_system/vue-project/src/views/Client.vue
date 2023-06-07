@@ -2,21 +2,21 @@
   <el-container>
     <el-main>
       <el-space wrap>
-          <el-table :data="clientData" style="width: 100%">
+          <el-table :data="clientData" style="width: 100%" max-height="421">
             <el-table-column fixed prop="id" label="Id" width="125" />
             <el-table-column prop="name" label="Name" width="125" />
             <el-table-column prop="phone_number" label="Phone Number" width="175" />
-            <el-table-column prop="address" label="Address" width="225" />
-            <el-table-column prop="contact_name" label="Contact Name" width="150" />
+            <el-table-column prop="address" label="Address" width="250" />
+            <el-table-column prop="contact_name" label="Contact Name" width="175" />
             <el-table-column prop="contact_phone_number" label="Contact Phone Number" width="200" />
-            <el-table-column prop="contact_relationship" label="Contact Relationship" width="175">
+            <el-table-column prop="contact_relationship" label="Contact Relationship" width="200">
             </el-table-column>
           </el-table>
       </el-space>
 
       <el-row>
         <el-space :size="0">
-          <el-card class="box-card" style="width: 225px">
+          <el-card class="box-card" style="width: 215px">
             <el-form>
               <el-form-item>
                 <el-select v-model="selectedField" placeholder="Select Field">
@@ -33,10 +33,22 @@
             </el-form>
             
             <el-button type="primary" @click="searchClient()">Search</el-button>
+            <el-popconfirm
+                title="Confirm to delete?"
+                cancel-button-type="primary"
+                cancel-button-text="No"
+                confirm-button-type="danger"
+                confirm-button-text="Yes"
+                @confirm="deleteClient"
+            >
+              <template #reference>
+                <el-button type="danger">Delete</el-button>
+              </template>
+            </el-popconfirm>
           </el-card>
 
-          <el-card class="box-card" style="width: 1000px">
-            <el-table :data="searchData" style="width: 100%" empty-text="No Data">
+          <el-card class="box-card" table-layout="auto">
+            <el-table :data="searchData" style="width: 100%" empty-text="No Data" max-height="175">
               <el-table-column fixed prop="id" label="Id" width="100" />
               <el-table-column prop="name" label="Name" width="100" />
               <el-table-column prop="phone_number" label="Phone Number" width="150" />
@@ -62,18 +74,6 @@
           <el-form-item>
             <el-button type="primary" @click="addClient">Add</el-button>
             <el-button type="warning">Update</el-button>
-            <el-popconfirm
-                title="Confirm to delete?"
-                cancel-button-type="primary"
-                cancel-button-text="No"
-                confirm-button-type="danger"
-                confirm-button-text="Yes"
-                @confirm="deleteClient"
-            >
-              <template #reference>
-                <el-button type="danger">Delete</el-button>
-              </template>
-            </el-popconfirm>
           </el-form-item>
         </el-form>
       </el-card>
@@ -153,7 +153,7 @@ export default {
 
     updateClient: function () {
       let data = {}
-      client_fields.forEach(field => data[field.name] = field.inputRef)
+      clientFields.forEach(field => data[field.name] = field.inputRef)
       axios.put(clientUrl + clientFields[0].inputRef + '/', data)
         .then(response => {
           if(response.status === 200){
@@ -173,7 +173,8 @@ export default {
     },
 
     deleteClient() {
-      axios.delete(clientUrl + clientFields[0].inputRef + '/')
+      let deleteContent = this.searchContent
+      axios.delete(clientUrl + deleteContent + '/')
         .then(response => {
           if(response.status === 204){
             ElMessage({

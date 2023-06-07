@@ -18,7 +18,7 @@ class Gen:
     def client(self, num):
         data = ""
 
-        relationship = ["父亲", "母亲", "子女", "其它"]
+        relationship = ["お父さん", "お母さん", "子", "セックス", "その他"]
 
         for _ in range(num):
             id = self.fake.unique.ssn()
@@ -35,6 +35,6 @@ class Gen:
         
 if __name__ == "__main__":
     g = Gen()
-    data = g.client(5)
+    data = g.client(15)
     with open("../../client.csv", "w") as f:
         f.write(data)

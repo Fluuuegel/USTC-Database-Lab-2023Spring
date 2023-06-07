@@ -2,7 +2,7 @@ import pandas as pd
 from api.models import Client
 
 def run():
-    data = pd.read_csv("client.csv", chunksize=5, header=None)
+    data = pd.read_csv("client.csv", chunksize=15, header=None)
 
     for items in data:
         insert_list = []

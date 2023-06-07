@@ -36,7 +36,7 @@ class Client(models.Model):
 class Account(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
     balance = models.DecimalField(max_digits=28, decimal_places=8)
-    reg_date = models.DateTimeField(null=True, blank=True)
+    register_date = models.DateTimeField(null=True, blank=True)
     interest_rate = models.DecimalField(max_digits=28, decimal_places=8)
     currency_type = models.CharField(max_length=255)
     staff_id = models.ForeignKey('Staff', to_field='id', null=True, blank=True, on_delete=models.RESTRICT)
@@ -48,22 +48,22 @@ class Loan(models.Model):
     status = models.IntegerField(default=0) # 0: not paid, 1: paid
     branch_name = models.ForeignKey('Branch', to_field='name', on_delete=models.RESTRICT)
 
-
-class Pay(models.Model):
-    date = models.DateTimeField(null=True, blank=True)
-    amount = models.DecimalField(max_digits=28, decimal_places=8)
-    loan_id = models.ForeignKey('Loan', to_field='id', on_delete=models.RESTRICT)
-
-class client_account(models.Model):
+class Client_Branch(models.Model):
     client_id = models.ForeignKey('Client', to_field='id', on_delete=models.RESTRICT)
-    account_id = models.ForeignKey('Account', to_field='id', on_delete=models.RESTRICT)
+    branch_name = models.ForeignKey('Branch', to_field='name', on_delete=models.RESTRICT)
+    account_id = models.ForeignKey('Account', to_field='id', null=True, blank=True, on_delete=models.RESTRICT)
 
     class Meta:
-        unique_together = (('client_id', 'account_id'),)
+        unique_together = (('client_id', 'branch_name'),)
 
-class client_loan(models.Model):
+class Client_Loan(models.Model):
     client_id = models.ForeignKey('Client', to_field='id', on_delete=models.RESTRICT)
     loan_id = models.ForeignKey('Loan', to_field='id', on_delete=models.RESTRICT)
 
     class Meta:
         unique_together = (('client_id', 'loan_id'),)
+
+class Pay(models.Model):
+    date = models.DateTimeField(null=True, blank=True)
+    amount = models.DecimalField(max_digits=28, decimal_places=8)
+    loan_id = models.ForeignKey('Loan', to_field='id', on_delete=models.RESTRICT)
