@@ -2,7 +2,8 @@
   <el-container>
     <el-main>
       <el-space wrap>
-          <el-table :data="clientData" style="width: 100%" max-height="421">
+        <el-card class="box-card" style="width: 1025px">
+          <el-table :data="clientData" style="width: 100%" max-height="430" height="430">
             <el-table-column fixed prop="id" label="Id" width="125" />
             <el-table-column prop="name" label="Name" width="125" />
             <el-table-column prop="phone_number" label="Phone Number" width="175" />
@@ -12,58 +13,56 @@
             <el-table-column prop="contact_relationship" label="Contact Relationship" width="200">
             </el-table-column>
           </el-table>
+        </el-card>
+
+        <el-card class="box-card" style="width: 215px">
+          <el-form>
+            <el-form-item>
+              <el-select v-model="selectedField" placeholder="Select Field">
+                <el-option label="Id" value="id" />
+                <el-option label="Name" value="name"/>
+              </el-select>
+            </el-form-item>
+          </el-form>
+
+          <el-form>
+            <el-form-item>
+              <el-input v-model="searchContent" placeholder="Search Content" />
+            </el-form-item>
+          </el-form>
+          
+          <el-button type="primary" @click="searchClient()">Search</el-button>
+          <el-popconfirm
+              title="Confirm to delete?"
+              cancel-button-type="primary"
+              cancel-button-text="No"
+              confirm-button-type="danger"
+              confirm-button-text="Yes"
+              @confirm="deleteClient"
+          >
+            <template #reference>
+              <el-button type="danger">Delete</el-button>
+            </template>
+          </el-popconfirm>
+        </el-card>
+
+        <el-card class="box-card" table-layout="auto" style="width: 800px;">
+          <el-table :data="searchData" style="width: 100%" empty-text="No Data" max-height="132" height="132">
+            <el-table-column fixed prop="id" label="Id" width="100" />
+            <el-table-column prop="name" label="Name" width="100" />
+            <el-table-column prop="phone_number" label="Phone Number" width="150" />
+            <el-table-column prop="address" label="Address" width="125" />
+            <el-table-column prop="contact_name" label="Contact Name" width="150" />
+            <el-table-column prop="contact_phone_number" label="Contact Phone Number" width="200" />
+            <el-table-column prop="contact_relationship" label="Contact Relationship" width="175">
+          </el-table-column>
+          </el-table>
+        </el-card>
       </el-space>
-
-      <el-row>
-        <el-space :size="0">
-          <el-card class="box-card" style="width: 215px">
-            <el-form>
-              <el-form-item>
-                <el-select v-model="selectedField" placeholder="Select Field">
-                  <el-option label="Id" value="id" />
-                  <el-option label="Name" value="name"/>
-                </el-select>
-              </el-form-item>
-            </el-form>
-
-            <el-form>
-              <el-form-item>
-                <el-input v-model="searchContent" placeholder="Search Content" />
-              </el-form-item>
-            </el-form>
-            
-            <el-button type="primary" @click="searchClient()">Search</el-button>
-            <el-popconfirm
-                title="Confirm to delete?"
-                cancel-button-type="primary"
-                cancel-button-text="No"
-                confirm-button-type="danger"
-                confirm-button-text="Yes"
-                @confirm="deleteClient"
-            >
-              <template #reference>
-                <el-button type="danger">Delete</el-button>
-              </template>
-            </el-popconfirm>
-          </el-card>
-
-          <el-card class="box-card" table-layout="auto">
-            <el-table :data="searchData" style="width: 100%" empty-text="No Data" max-height="175">
-              <el-table-column fixed prop="id" label="Id" width="100" />
-              <el-table-column prop="name" label="Name" width="100" />
-              <el-table-column prop="phone_number" label="Phone Number" width="150" />
-              <el-table-column prop="address" label="Address" width="125" />
-              <el-table-column prop="contact_name" label="Contact Name" width="150" />
-              <el-table-column prop="contact_phone_number" label="Contact Phone Number" width="200" />
-              <el-table-column prop="contact_relationship" label="Contact Relationship" width="175">
-            </el-table-column>
-            </el-table>
-          </el-card>
-        </el-space>
-      </el-row>
     </el-main>
 
     <el-aside width="275px">
+      <div style="min-height: 20px;"></div>
       <el-card class="box-card" style="width: 273px">
         <el-form
           label-position="top"
