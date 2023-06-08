@@ -81,115 +81,115 @@
 </template>
 
 <script>
-import axios from 'axios';
-import {ElMessage} from 'element-plus'
+  import axios from 'axios';
+  import {ElMessage} from 'element-plus'
 
-const clientUrl = 'http://localhost:8000/api/client/'
+  const clientUrl = 'http://localhost:8000/api/client/'
 
-const clientFields = [
-  {'name': 'id', 'label': 'Id'},
-  {'name': 'name', 'label': 'Name',},
-  {'name': 'phone_number', 'label': 'Phone Number'},
-  {'name': 'address', 'label': 'Address'},
-  {'name': 'contact_name', 'label': 'Contact Name'},
-  {'name': 'contact_phone_number', 'label': 'Contact Phone Number'},
-  {'name': 'contact_relationship', 'label': 'Contact Relationship'}
-]
-clientFields.forEach(field => field['inputRef'] = '')
+  const clientFields = [
+    {'name': 'id', 'label': 'Id'},
+    {'name': 'name', 'label': 'Name',},
+    {'name': 'phone_number', 'label': 'Phone Number'},
+    {'name': 'address', 'label': 'Address'},
+    {'name': 'contact_name', 'label': 'Contact Name'},
+    {'name': 'contact_phone_number', 'label': 'Contact Phone Number'},
+    {'name': 'contact_relationship', 'label': 'Contact Relationship'}
+  ]
+  clientFields.forEach(field => field['inputRef'] = '')
 
-export default {
-  data() {
-    return {
-      clientFields,
-      clientData: [],
-      selectedField: '',
-      searchContent: '',
-      queryUrl: '',
-      searchData: [],
-    };
-  },
-  created() {
-    this.fetchItems();
-  },
-  methods: {
-    fetchItems() {
-      axios.get(clientUrl)
-        .then(response => {
-          this.clientData = response.data;
-        })
-        .catch(error => {
-          console.error(error);
-        });
+  export default {
+    data() {
+      return {
+        clientFields,
+        clientData: [],
+        selectedField: '',
+        searchContent: '',
+        queryUrl: '',
+        searchData: [],
+      };
     },
-    searchClient() {
-      if(this.selectedField === 'id') {
-        this.searchData = this.clientData.filter(item => item.id === this.searchContent);
+    created() {
+      this.fetchItems();
+    },
+    methods: {
+      fetchItems() {
+        axios.get(clientUrl)
+          .then(response => {
+            this.clientData = response.data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      },
+      searchClient() {
+        if(this.selectedField === 'id') {
+          this.searchData = this.clientData.filter(item => item.id === this.searchContent);
+        }
+        if(this.selectedField === 'name') {
+          this.searchData = this.clientData.filter(item => item.name === this.searchContent);
+        }
+      },
+      addClient() {
+        let data = {}
+        clientFields.forEach(field => data[field.name] = field.inputRef)
+        axios.post(clientUrl, data)
+          .then(response => {
+            if(response.status === 201){
+              ElMessage({
+                message: 'Successfully added',
+                type: 'success'
+              })
+            }
+          })
+          .catch(error => {
+            console.log(error)
+            ElMessage({
+              message: 'Failed to add',
+              type: 'error'
+            })
+          })
+      },
+
+      updateClient: function () {
+        let data = {}
+        clientFields.forEach(field => data[field.name] = field.inputRef)
+        axios.put(clientUrl + clientFields[0].inputRef + '/', data)
+          .then(response => {
+            if(response.status === 200){
+              ElMessage({
+                message: 'Successfully updated',
+                type: 'success'
+              })
+            }
+          })
+          .catch(error => {
+            console.log(error)
+            ElMessage({
+              message: 'Failed to update',
+              type: 'error'
+            })
+          })
+      },
+
+      deleteClient() {
+        let deleteContent = this.searchContent
+        axios.delete(clientUrl + deleteContent + '/')
+          .then(response => {
+            if(response.status === 204){
+              ElMessage({
+                message: 'Successfully deleted',
+                type: 'success'
+              })
+            }
+          })
+          .catch(error => {
+            console.log(error)
+            ElMessage({
+              message: 'Failed to delete',
+              type: 'error'
+            })
+          })
       }
-      if(this.selectedField === 'name') {
-        this.searchData = this.clientData.filter(item => item.name === this.searchContent);
-      }
-    },
-    addClient() {
-      let data = {}
-      clientFields.forEach(field => data[field.name] = field.inputRef)
-      axios.post(clientUrl, data)
-        .then(response => {
-          if(response.status === 201){
-            ElMessage({
-              message: 'Successfully added',
-              type: 'success'
-            })
-          }
-        })
-        .catch(error => {
-          console.log(error)
-          ElMessage({
-            message: 'Failed to add',
-            type: 'error'
-          })
-        })
-    },
-
-    updateClient: function () {
-      let data = {}
-      clientFields.forEach(field => data[field.name] = field.inputRef)
-      axios.put(clientUrl + clientFields[0].inputRef + '/', data)
-        .then(response => {
-          if(response.status === 200){
-            ElMessage({
-              message: 'Successfully updated',
-              type: 'success'
-            })
-          }
-        })
-        .catch(error => {
-          console.log(error)
-          ElMessage({
-            message: 'Failed to update',
-            type: 'error'
-          })
-        })
-    },
-
-    deleteClient() {
-      let deleteContent = this.searchContent
-      axios.delete(clientUrl + deleteContent + '/')
-        .then(response => {
-          if(response.status === 204){
-            ElMessage({
-              message: 'Successfully deleted',
-              type: 'success'
-            })
-          }
-        })
-        .catch(error => {
-          console.log(error)
-          ElMessage({
-            message: 'Failed to delete',
-            type: 'error'
-          })
-        })
     }
-  }
-};
+  };
 </script>

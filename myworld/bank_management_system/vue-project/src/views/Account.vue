@@ -1,49 +1,56 @@
 <template>
-    <el-row justify="space-around">
-  
-      <el-col :span="5">
-        <el-form
-          label-position="left"
-          label-width="110px"
-          size="small"
-        >
+  <el-container>
+    <el-main>
+      <el-space wrap>
+        <el-card class="box-card" style="width: 550px">
+          <el-table :data="accountData" style="width: 100%" max-height="740" height="740">
+            <el-table-column fixed prop="id" label="Id" width="125" />
+            <el-table-column prop="balance" label="Balance" width="175" />
+            <el-table-column prop="register_date" label="Register Date" width="225" />
+            <el-table-column prop="interest_rate" label="Interest Rate" width="150" />
+            <el-table-column prop="currency_type" label="Currency Type" width="150" />
+            <el-table-column prop="staff_id" label="Staff ID" width="125">
+            </el-table-column>
+          </el-table>
+        </el-card>
+        
+        <el-card class="box-card" style="width: 400px">
+          <el-table :data="info" style="width: 100%" max-height="740" height="740" @row-click="fillInput">
+            <el-table-column prop="client_id" label="Client Id"/>
+            <el-table-column prop="branch_name" label="Branch Name"/>
+            <el-table-column prop="account_id" label="Account Id"/>
+          </el-table>
+        </el-card>
+      </el-space>
+    </el-main>
+    
+    <el-aside width="285px">
+      <div style="min-height: 20px;"></div>
+      <el-card class="box-card">
+        <el-form>
           <el-form-item v-for="field in clientBranchFields" :key="field.name" :label="field.label">
             <el-input v-model="field.searchRef"/>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="searchSavingAccount">查询</el-button>
+            <el-button type="primary" @click="searchAccount">Search</el-button>
           </el-form-item>
         </el-form>
-      </el-col>
-  
-      <el-col :span="8">
-        <div class="pagination-block">
-          <el-table :data="info.results" border @row-click="fillInput" size="small">
-            <el-table-column prop="client_id" label="身份证号"/>
-            <el-table-column prop="branch_name" label="支行名"/>
-            <el-table-column prop="account_id" label="储蓄账户号"/>
-          </el-table>
-        </div>
-      </el-col>
-  
-      <el-col :span="9">
-        <el-form
-          label-position="left"
-          label-width="110px"
-          size="small"
-        >
+      </el-card>
+
+      <el-card class="box-card">
+        <el-form>
           <el-form-item v-for="field in inputFields" :key="field.name" :label="field.label">
             <el-input v-model="field.inputRef"/>
           </el-form-item>
           <el-form-item>
             <el-dialog
               v-model="openDialog"
-              title="开户确认"
+              title="Confirm"
               width="30%"
             >
               <span>
                 <el-descriptions :column="1" border>
-                  <el-descriptions-item v-for="i in add_indices" :label="inputFields[i].label"
+                  <el-descriptions-item v-for="i in addList" :label="inputFields[i].label"
                                         :key="inputFields[i].name" width="110px">
                     {{ inputFields[i].inputRef }}
                   </el-descriptions-item>
@@ -51,34 +58,34 @@
               </span>
               <template #footer>
                 <span class="dialog-footer">
-                  <el-button @click="openDialog = false">取消</el-button>
-                  <el-button type="primary" @click="openSavingAccount">确认</el-button>
+                  <el-button @click="openDialog = false">Cancel</el-button>
+                  <el-button type="primary" @click="openAccount">Confirm</el-button>
                 </span>
               </template>
             </el-dialog>
-            <el-button type="success" @click="openDialog = true">开户</el-button>
-            <el-button type="warning" @click="updateSavingAccount">更新</el-button>
+            <el-button type="primary" @click="openDialog = true">Open</el-button>
+            <el-button type="warning" @click="updateAccount">Update</el-button>
             <el-popconfirm
-              :title="'确认要删除储蓄账户' + inputFields[3].inputRef + '吗？'"
+              :title="'Are you sure you want to delete ' + inputFields[3].inputRef + '?'"
               cancel-button-type="primary"
-              cancel-button-text="否"
+              cancel-button-text="No"
               confirm-button-type="danger"
-              confirm-button-text="是"
-              @confirm="deleteSavingAccount"
+              confirm-button-text="Yes"
+              @confirm="deleteAccount"
             >
               <template #reference>
-                <el-button type="danger">销户</el-button>
+                <el-button type="danger">Delete</el-button>
               </template>
             </el-popconfirm>
           </el-form-item>
         </el-form>
-      </el-col>
+      </el-card>
+    </el-aside>
+  </el-container>
+</template>
   
-    </el-row>
-  </template>
   
-  
-  <script>
+<script>
   import axios from "axios";
   import {ElMessage} from "element-plus";
   
@@ -94,7 +101,7 @@
     {'name': 'client_name', 'label': 'Name'},
     {'name': 'branch_name', 'label': 'Branch Name'},
     {'name': 'account_id', 'label': 'Account ID'},
-    {'name': 'currency', 'label': 'Currency Type'},
+    {'name': 'currency_type', 'label': 'Currency Type'},
     {'name': 'balance', 'label': 'Balance'},
     {'name': 'interest_rate', 'label': 'Interest Rate'},
     {'name': 'staff_id', 'label': 'Staff ID'},
@@ -102,70 +109,78 @@
   ]
   inputFields.forEach(field => field['inputRef'] = '')
 
-  const add_indices = [0, 2, 4, 6, 7]
-  const update_indices = [3, 4, 5, 6, 7]
+  const addList = [0, 2, 4, 6, 7]
+  const updateList = [3, 4, 5, 6, 7]
   
   const apiUrl = 'http://localhost:8000/api/'
-  
-  const auth_config = {auth: {username: 'tanix', password: '1234'}}
-  
+  const accountUrl = 'http://localhost:8000/api/account/'
+
   export default {
-    name: "SavingAccountManagement",
     data() {
       return {
         clientBranchFields,
         inputFields,
-        add_indices,
-        info: '',
+        addList,
+        info: [],
         queryUrl: apiUrl + 'client_branch/?',
         openDialog: false,
+        accountData:[],
       }
     },
+    created() {
+      this.fetchItems();
+    },
     mounted() {
-      this.searchSavingAccount()
+      this.searchAccount()
     },
     methods: {
+      fetchItems() {
+        axios.get(accountUrl)
+          .then(response => {
+            this.accountData = response.data;
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      },
 
-      searchSavingAccount: async function () {
-        let vm = this
-        vm.queryUrl = apiUrl + 'client_branch/?'
+      searchAccount: async function () {
+        this.queryUrl = apiUrl + 'client_branch/?'
         clientBranchFields.forEach(field => {
           if(field.searchRef)
-              vm.queryUrl += field.name + '=' + field.searchRef + '&'
+              this.queryUrl += field.name + '=' + field.searchRef + '&'
         })
-        vm.info = (await axios.get(vm.queryUrl)).data
-        this.pageCount = Math.ceil(this.info.count / 8)
+        this.info = (await axios.get(this.queryUrl)).data
       },
   
       fillInput: function (client_branch) {
-        let vm = this
-        vm.inputFields[0].inputRef = client_branch['client_id']
+        this.inputFields[0].inputRef = client_branch['client_id']
         axios.get(apiUrl + 'client/' + client_branch['client_id'] + '/')
-          .then(response => vm.inputFields[1].inputRef = response.data['name'])
+          .then(response => this.inputFields[1].inputRef = response.data['name'])
   
-        vm.inputFields[2].inputRef = client_branch['branch_name']
+        this.inputFields[2].inputRef = client_branch['branch_name']
   
-        if(client_branch['account_id']){
-          vm.inputFields[3].inputRef = client_branch['account_id']
+        if(client_branch['account_id']) {
+          this.inputFields[3].inputRef = client_branch['account_id']
           axios.get(apiUrl + 'account/' + client_branch['account_id'] + '/')
             .then(response => {
-              vm.inputFields[4].inputRef = response.data['currency']
-              vm.inputFields[5].inputRef = response.data['balance']
-              vm.inputFields[6].inputRef = response.data['interest_rate']
-              vm.inputFields[7].inputRef = response.data['staff_id']
-              vm.inputFields[8].inputRef = response.data['open_date']
+              this.inputFields[4].inputRef = response.data['currency_type']
+              this.inputFields[5].inputRef = response.data['balance']
+              this.inputFields[6].inputRef = response.data['interest_rate']
+              this.inputFields[7].inputRef = response.data['staff_id']
+              this.inputFields[8].inputRef = response.data['register_date']
             })
         }
-        else for(let i = 3; i <= 9; i++) vm.inputFields[i].inputRef = ''
+        else for(let i = 3; i <= 8; i++) this.inputFields[i].inputRef = ''
       },
   
-      openSavingAccount: function () {
+      openAccount: function () {
         this.openDialog = false
         let data = {}
-        add_indices.forEach(i => data[inputFields[i].name] = inputFields[i].inputRef)
+        addList.forEach(i => data[inputFields[i].name] = inputFields[i].inputRef)
         axios.post(apiUrl + 'client_branch/open_account/', data)
             .then(response => {
-              if(response.status === 201){
+              if(response.status === 201) {
                 ElMessage({
                   message: 'Success',
                   type: 'success'
@@ -181,7 +196,7 @@
             })
       },
   
-      updateSavingAccount: function () {
+      updateAccount: function () {
         if(!inputFields[3].inputRef){
           ElMessage({
             message: 'No account id',
@@ -190,7 +205,7 @@
           return
         }
         let data = {}
-        update_indices.forEach(i => data[inputFields[i].name] = inputFields[i].inputRef)
+        updateList.forEach(i => data[inputFields[i].name] = inputFields[i].inputRef)
         axios.put(apiUrl + 'account/' + inputFields[3].inputRef + '/', data)
           .then(response => {
             if(response.status === 200){

@@ -6,8 +6,10 @@ from rest_framework.routers import DefaultRouter
 
 router = DefaultRouter()
 router.register('client', views.ClientViewSet)
+router.register('staff', views.StaffViewSet)
 router.register('branch', views.BranchViewSet)
 router.register('account', views.AccountViewSet)
+router.register('client_branch', views.ClientBranchViewSet)
 
 app_name = 'api'
 urlpatterns = []
