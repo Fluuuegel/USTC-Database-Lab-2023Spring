@@ -16,6 +16,8 @@ class StaffSerializer(serializers.ModelSerializer):
         fields = '__all__'
         
 class BranchSerializer(serializers.ModelSerializer):
+    url_field_name = 'name'
+    url = serializers.HyperlinkedIdentityField(view_name='api:branch-detail', lookup_field='name', read_only=True)
 
     class Meta:
         model = Branch

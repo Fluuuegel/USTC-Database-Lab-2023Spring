@@ -18,6 +18,7 @@
             <el-table :data="clientLoanData" table-layout="auto" max-height="590" height="590" @row-click="fillInput">
               <el-table-column prop="client_id" label="Client Id"/>
               <el-table-column prop="loan_id" label="Loan Id"/>
+              <el-table-column prop="status" label="Status" />
             </el-table>
           </el-card>
         </el-space>
@@ -91,6 +92,7 @@
     const clientLoanFields = [
       {'name': 'client_id', 'label': 'ID'},
       {'name': 'loan_id', 'label': 'Loan ID'},
+      {'name': 'status', 'label': 'Status'}
     ]
     clientLoanFields.forEach(field => field['searchRef'] = '')
     

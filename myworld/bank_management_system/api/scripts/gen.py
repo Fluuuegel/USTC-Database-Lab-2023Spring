@@ -54,7 +54,7 @@ if __name__ == "__main__":
     g = Gen()
 
     data = g.account(15)
-    with open("../../account.csv", "w") as f:
+    with open("../../data/account.csv", "w") as f:
         f.write(data)
 
 

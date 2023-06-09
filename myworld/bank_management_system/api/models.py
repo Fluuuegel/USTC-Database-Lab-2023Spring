@@ -59,6 +59,7 @@ class Client_Branch(models.Model):
 class Client_Loan(models.Model):
     client_id = models.ForeignKey('Client', to_field='id', on_delete=models.RESTRICT)
     loan_id = models.ForeignKey('Loan', to_field='id', on_delete=models.RESTRICT)
+    status = models.IntegerField(default=0) # 0: not paid, 1: paid
 
     class Meta:
         unique_together = (('client_id', 'loan_id'),)

@@ -4,10 +4,11 @@
         <el-card class="box-card" style="width: 800px">
           <el-container>
             <el-header height="50px">
-              <el-radio-group v-model="radio" @change="radioChange">
-                <el-radio-button label="Monthly"/>
-                <el-radio-button label="Seasonly"/>
+              <el-radio-group v-model="radio" @change="display">
                 <el-radio-button label="Yearly"/>
+                <el-radio-button label="Seasonly"/>
+                <el-radio-button label="Monthly"/>
+                <el-radio-button label="Last Year"/>
               </el-radio-group>
             </el-header>
     
@@ -38,7 +39,7 @@
     name: "BusinessStatistics",
     data() {
       return {
-        radio: 'Monthly',
+        radio: 'Yearly',
         statistics: [
           {
             'branch_name': '',
@@ -50,10 +51,10 @@
       }
     },
     mounted() {
-      this.radioChange('Monthly')
+      this.display('Yearly')
     },
     methods: {
-      radioChange: function (radio) {
+      display: function (radio) {
         axios.post(apiUrl + 'branch/statisticize/', {'radio': radio})
           .then(response => {
             this.statistics = response.data

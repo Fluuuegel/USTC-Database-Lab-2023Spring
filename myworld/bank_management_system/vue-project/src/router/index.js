@@ -3,32 +3,44 @@ import ClientManagement from "@/views/ClientManagement.vue";
 import AccountManagement from "@/views/AccountManagement.vue";
 import LoanManagement from "@/views/LoanManagement.vue";
 import BusinessStatistics from "@/views/BusinessStatistics.vue";
+import Register from "@/views/Register.vue";
+import User from "@/views/User.vue";
 
 const routes = [
     {
         path: "/",
-        redirect: "/client",
+        redirect: "/register",
     },
     {
-        path: "/client",
+        path: "/admin/client",
         name: "ClientManagement",
         component: ClientManagement
     },
     {
-        path: "/account",
+        path: "/admin/account",
         name: "AccountManagement",
         component: AccountManagement
     },
     {
-        path: "/loan",
+        path: "/admin/loan",
         name: "LoanManagement",
         component: LoanManagement
     },
     {
-        path: "/statistics",
+        path: "/admin/statistics",
         name: "BusinessStatistics",
         component: BusinessStatistics
     },
+    {
+        path: "/register",
+        name: "Register",
+        component: Register
+    },
+    {
+        path: "/user/:id",
+        name: "User",
+        component: User
+    }
 ];
 
 const router = createRouter({

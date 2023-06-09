@@ -32,7 +32,7 @@
             <el-input v-model="field.searchRef"/>
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="searchAccount">Search</el-button>
+            <el-button type="primary" @click="searchClientBranch">Search</el-button>
           </el-form-item>
         </el-form>
       </el-card>
@@ -131,7 +131,7 @@
       this.fetchItems();
     },
     mounted() {
-      this.searchAccount()
+      this.searchClientBranch()
     },
     methods: {
       fetchItems() {
@@ -144,7 +144,7 @@
           });
       },
 
-      searchAccount: async function () {
+      searchClientBranch: async function () {
         this.queryUrl = apiUrl + 'client_branch/?'
         clientBranchFields.forEach(field => {
           if(field.searchRef)

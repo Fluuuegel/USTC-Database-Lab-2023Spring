@@ -7,7 +7,6 @@ import random
 from django.db import IntegrityError, transaction
 from django.db.models import ProtectedError
 from django.utils import timezone
-from decimal import Decimal
 
 from .serializers import *
 
@@ -16,7 +15,7 @@ from .serializers import *
 class BranchViewSet(viewsets.ModelViewSet) :
     queryset = Branch.objects.all()
     serializer_class = BranchSerializer
-    lookup_field = 'id'
+    lookup_field = 'name'
 
     @action(detail=False, methods=['post'])
     def statisticize(self, request):
@@ -28,17 +27,19 @@ class BranchViewSet(viewsets.ModelViewSet) :
         loan = Loan.objects.all()
         data = []
 
-        if radio == 'Season':
+        if radio == 'Seasonly':
             month_lower_bound = ((timezone.now().month - 1) // 3) * 3 + 1
             month_upper_bound = ((timezone.now().month - 1) // 3) * 3 + 3
-            accounts = accounts.filter(register_date__month__gte=month_lower_bound,
-                                                     register_date__month__lte=month_upper_bound)
-            loan = loan.filter(release_date__month__gte=month_lower_bound,
-                                                 release_date__month__lte=month_upper_bound)
-        elif radio == 'Month':
-            accounts = accounts.filter(open_date__month=timezone.now().month)
+            accounts = accounts.filter(register_date__month__gte=month_lower_bound, register_date__month__lte=month_upper_bound)
+            loan = loan.filter(release_date__month__gte=month_lower_bound, release_date__month__lte=month_upper_bound)
+        elif radio == 'Monthly':
+            accounts = accounts.filter(register_date__month=timezone.now().month)
             loan = loan.filter(release_date__month=timezone.now().month)
-    
+
+        elif radio == 'Last Year':
+            accounts = accounts.filter(register_date__year__gte=timezone.now().year - 2, register_date__year__lte=timezone.now().year - 1)
+            loan = loan.filter(release_date__year__gte=timezone.now().year - 2, release_date__year__lte=timezone.now().year - 1)
+
         for branch in branches:
             data.append({
                 'branch_name': branch.name,
@@ -54,7 +55,7 @@ class BranchViewSet(viewsets.ModelViewSet) :
                 except Account.DoesNotExist:
                     pass
             for loan in Loan.objects.filter(branch_name=branch.name):
-                data[-1]['loan_amount'] += loan.total
+                data[-1]['loan'] += loan.total
 
         return Response(status=status.HTTP_200_OK, data=data)
 
@@ -67,6 +68,16 @@ class ClientViewSet(viewsets.ModelViewSet) :
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
     lookup_field = 'id'
+
+    def get_queryset(self):
+        text_fields = ['id', 'name', 'phone_number', 'address', 'contact_name', 'contact_phone_number',
+                       'contact_email', 'contact_relationship']
+        queryset = self.queryset
+        for text_field in text_fields: 
+            query_param = self.request.query_params.get(text_field)
+            if query_param:
+                queryset = queryset.filter(**{f'{text_field}__icontains': query_param})
+        return queryset
 
 class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()
@@ -149,6 +160,10 @@ class LoanViewSet(viewsets.ModelViewSet):
             return Response(status=status.HTTP_400_BAD_REQUEST, data='Wrong loan id')
 
         loan.balance = balance
+
+        # trigger
+        if(balance == 0):
+            status = 1
 
         try:
             loan.save()
@@ -257,6 +272,7 @@ class ClientLoanViewSet(viewsets.ModelViewSet):
 
         try:
             client_loan.loan_id = loan
+            client_loan.status = 0
             client_loan.save()
             transaction.savepoint_commit(foo)
             return Response(status=status.HTTP_201_CREATED)

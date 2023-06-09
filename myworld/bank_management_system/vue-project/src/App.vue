@@ -1,7 +1,7 @@
 <template>
   <el-container>
-    <el-header><app-header/></el-header>
-    <el-main style="margin: 25px"><router-view/></el-main>
+    <el-header v-if="isHome"><app-header/></el-header>
+    <el-main style="margin: 0px"><router-view/></el-main>
   </el-container>
 </template>
 
@@ -15,7 +15,8 @@ export default {
   },
   computed: {
     isHome() {
-      return this.$route.name in window
+      // console.log(this.$route.path); 
+      return this.$route.path.indexOf('/admin/') === 0;
     }
   }
 };
