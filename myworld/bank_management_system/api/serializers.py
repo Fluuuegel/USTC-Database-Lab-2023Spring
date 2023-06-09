@@ -27,6 +27,22 @@ class AccountSerializer(serializers.ModelSerializer):
         model = Account
         fields = '__all__'
 
+class LoanSerializer(serializers.ModelSerializer):
+    url_field_name = 'id'
+    url = serializers.HyperlinkedIdentityField(view_name='api:loan-detail', lookup_field='id', read_only=True)
+
+    class Meta:
+        model = Loan
+        fields = '__all__'
+
+class Client_LoanSerializer(serializers.ModelSerializer):
+    url_field_name = 'id'
+    url = serializers.HyperlinkedIdentityField(view_name='api:client_loan-detail', lookup_field='id', read_only=True)
+
+    class Meta:
+        model = Client_Loan
+        fields = '__all__'
+
 class Client_BranchSerializer(serializers.ModelSerializer):
     url_field_name = 'id'
     url = serializers.HyperlinkedIdentityField(view_name='api:client_branch-detail', lookup_field='id', read_only=True)

@@ -32,7 +32,6 @@ class Client(models.Model):
     def __str__(self):
         return f"{self.id} {self.name} {self.phone_number} {self.address} {self.mail} {self.contact_name} {self.contact_phone_number} {self.contact_relationship}"
     
-
 class Account(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
     balance = models.DecimalField(max_digits=28, decimal_places=8)
@@ -44,9 +43,10 @@ class Account(models.Model):
 class Loan(models.Model):
     id = models.CharField(max_length=255, primary_key=True)
     total = models.DecimalField(max_digits=28, decimal_places=8)
-    paid = models.DecimalField(max_digits=28, decimal_places=8, default=total)
-    status = models.IntegerField(default=0) # 0: not paid, 1: paid
+    balance = models.DecimalField(max_digits=28, decimal_places=8, default=total)
+    release_date = models.DateTimeField(null=True, blank=True)
     branch_name = models.ForeignKey('Branch', to_field='name', on_delete=models.RESTRICT)
+    staff_id = models.ForeignKey('Staff', to_field='id', null=True, blank=True, on_delete=models.RESTRICT)
 
 class Client_Branch(models.Model):
     client_id = models.ForeignKey('Client', to_field='id', on_delete=models.RESTRICT)
@@ -62,8 +62,3 @@ class Client_Loan(models.Model):
 
     class Meta:
         unique_together = (('client_id', 'loan_id'),)
-
-class Pay(models.Model):
-    date = models.DateTimeField(null=True, blank=True)
-    amount = models.DecimalField(max_digits=28, decimal_places=8)
-    loan_id = models.ForeignKey('Loan', to_field='id', on_delete=models.RESTRICT)

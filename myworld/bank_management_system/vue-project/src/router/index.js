@@ -1,6 +1,8 @@
 import {createWebHistory, createRouter} from "vue-router";
-import Client from "@/views/Client.vue";
-import Account from "@/views/Account.vue";
+import ClientManagement from "@/views/ClientManagement.vue";
+import AccountManagement from "@/views/AccountManagement.vue";
+import LoanManagement from "@/views/LoanManagement.vue";
+import BusinessStatistics from "@/views/BusinessStatistics.vue";
 
 const routes = [
     {
@@ -9,14 +11,24 @@ const routes = [
     },
     {
         path: "/client",
-        name: "Client",
-        component: Client
+        name: "ClientManagement",
+        component: ClientManagement
     },
     {
         path: "/account",
-        name: "Account",
-        component: Account
-    }
+        name: "AccountManagement",
+        component: AccountManagement
+    },
+    {
+        path: "/loan",
+        name: "LoanManagement",
+        component: LoanManagement
+    },
+    {
+        path: "/statistics",
+        name: "BusinessStatistics",
+        component: BusinessStatistics
+    },
 ];
 
 const router = createRouter({

@@ -15,7 +15,7 @@
         </el-card>
         
         <el-card class="box-card" style="width: 400px">
-          <el-table :data="info" style="width: 100%" max-height="740" height="740" @row-click="fillInput">
+          <el-table :data="clientBranchData" style="width: 100%" max-height="740" height="740" @row-click="fillInput">
             <el-table-column prop="client_id" label="Client Id"/>
             <el-table-column prop="branch_name" label="Branch Name"/>
             <el-table-column prop="account_id" label="Account Id"/>
@@ -121,10 +121,10 @@
         clientBranchFields,
         inputFields,
         addList,
-        info: [],
         queryUrl: apiUrl + 'client_branch/?',
         openDialog: false,
         accountData:[],
+        clientBranchData: [],
       }
     },
     created() {
@@ -150,7 +150,7 @@
           if(field.searchRef)
               this.queryUrl += field.name + '=' + field.searchRef + '&'
         })
-        this.info = (await axios.get(this.queryUrl)).data
+        this.clientBranchData = (await axios.get(this.queryUrl)).data
       },
   
       fillInput: function (client_branch) {
