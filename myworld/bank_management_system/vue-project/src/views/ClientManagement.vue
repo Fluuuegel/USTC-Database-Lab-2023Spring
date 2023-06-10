@@ -174,7 +174,8 @@
       deleteClient() {
         let deleteContent = this.searchContent
         axios.delete(clientUrl + deleteContent + '/')
-          .then(response => {
+          .then(
+            response => {
             if(response.status === 204){
               ElMessage({
                 message: 'Successfully deleted',

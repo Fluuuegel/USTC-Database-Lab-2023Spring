@@ -110,7 +110,7 @@
   inputFields.forEach(field => field['inputRef'] = '')
 
   const addList = [0, 2, 4, 6, 7]
-  const updateList = [3, 4, 5, 6, 7]
+  const updateList = [3, 4, 5, 6, 7, 8]
   
   const apiUrl = 'http://localhost:8000/api/'
   const accountUrl = 'http://localhost:8000/api/account/'
@@ -225,6 +225,13 @@
       },
   
       deleteAccount: function () {
+        if(!inputFields[3].inputRef){
+          ElMessage({
+            message: 'No account id',
+            type: 'error'
+          })
+          return
+        }
         axios.delete(apiUrl + 'account/' + inputFields[3].inputRef + '/')
           .then(resopnse => {
             if(resopnse.status === 204){

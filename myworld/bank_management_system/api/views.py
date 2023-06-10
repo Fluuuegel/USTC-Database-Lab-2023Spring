@@ -63,8 +63,8 @@ class StaffViewSet(viewsets.ModelViewSet):
     queryset = Staff.objects.all()
     serializer_class = StaffSerializer
     lookup_field = 'id'
-    
-class ClientViewSet(viewsets.ModelViewSet) :
+
+class ClientSearchViewSet(viewsets.ModelViewSet):
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
     lookup_field = 'id'
@@ -73,11 +73,39 @@ class ClientViewSet(viewsets.ModelViewSet) :
         text_fields = ['id', 'name', 'phone_number', 'address', 'contact_name', 'contact_phone_number',
                        'contact_email', 'contact_relationship']
         queryset = self.queryset
-        for text_field in text_fields: 
+        for text_field in text_fields:
             query_param = self.request.query_params.get(text_field)
             if query_param:
                 queryset = queryset.filter(**{f'{text_field}__icontains': query_param})
         return queryset
+
+class ClientViewSet(viewsets.ModelViewSet) :
+    queryset = Client.objects.all()
+    serializer_class = ClientSerializer
+    lookup_field = 'id'
+
+    @transaction.atomic
+    def destroy(self, request, *args, **kwargs):
+        client = self.get_object()
+
+        foo = transaction.savepoint()
+
+        try: 
+            client.delete()
+        except :
+            try:
+                client_branch = Client_Branch.objects.get(client_id=client.id)
+            except Client_Branch.DoesNotExist:
+                transaction.savepoint_rollback(foo)
+                return Response(status=status.HTTP_400_BAD_REQUEST, data='Client_Branch does not exist')
+            
+            client_branch.delete()
+            client.delete()
+            transaction.savepoint_commit(foo)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        
+        transaction.savepoint_commit(foo)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()

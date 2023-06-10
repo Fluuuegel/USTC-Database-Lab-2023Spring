@@ -10,7 +10,8 @@
             <el-input v-model="field.inputRef" />
           </el-form-item>
           <el-form-item>
-            <el-button type="primary" @click="register">Login / Register</el-button>
+            <el-button type="primary" @click="login">Login</el-button>
+            <el-button type="primary" @click="register">Register</el-button>
             <el-button type="warning" @click="adminLogin">Admin Login</el-button>
           </el-form-item>
         </el-form>
@@ -37,7 +38,7 @@ export default {
     }
   },
   methods: {
-    register() {
+    login() {
       let data = {}
       inputFields.forEach(field => data[field.name] = field.inputRef)
       axios.post('http://localhost:8000/register/user/login/', data)
@@ -49,27 +50,37 @@ export default {
             })
             this.$router.push(`/user/${data.id}`)
           }
-          else {
-            axios.post('http://localhost:8000/register/user/register/', data)
-            .then(response => {
-              if(response.status === 201) {
-                ElMessage({
-                  message: 'Success',
-                  type: 'success'
-                })
-                this.$router.push(`/user/${data.id}`)
-              }
+        })
+        .catch(error => {
+          console.log(error)
+          ElMessage({
+            message: 'Failed to login',
+            type: 'error'
+          })
+        })
+    },
+
+    register() {
+      let data = {}
+      axios.post('http://localhost:8000/register/user/register/', data)
+        .then(response => {
+          if(response.status === 201) {
+            ElMessage({
+              message: 'Success',
+              type: 'success'
             })
-            .catch(error => {
-              console.log(error)
-              ElMessage({
-                message: 'Failed to register or login',
-                type: 'error'
-              })
-            })
+            this.$router.push(`/user/${data.id}`)
           }
         })
-  },
+        .catch(error => {
+          console.log(error)
+          ElMessage({
+            message: 'Failed to register',
+            type: 'error'
+          })
+        })
+    },
+
   adminLogin() {
     this.$router.push(`/admin/client`)
   }

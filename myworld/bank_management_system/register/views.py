@@ -2,14 +2,10 @@ from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-import random
 
-from django.db import IntegrityError, transaction
-from django.db.models import ProtectedError
-from django.utils import timezone
+from django.db import transaction
 
 from .serializers import *
-from .forms import *
 # Create your views here.
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -29,7 +25,7 @@ class UserViewSet(viewsets.ModelViewSet):
                     return Response(serializer.data, status=status.HTTP_201_CREATED)
             except:
                 return Response({'error': 'Username already exists.'}, status=status.HTTP_409_CONFLICT)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        return Response({'error': 'Fail to register.'}, serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
     @action(detail=False, methods=['post'])
     def login(self, request):
@@ -38,7 +34,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
         try:
             user = User.objects.get(id=id, passwd=passwd)
-        except user.DoesNotExist:
+        except : 
             return Response({'message': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
 
         return Response(status=status.HTTP_200_OK)

@@ -1,4 +1,21 @@
 <template>
+  <el-row justify="center">
+    <div class="demo-image">
+      <div class="block">
+        <span class="demonstration">{{ id }}</span>
+        <el-image style="width: 100px; height: 100px" :src="imageUrl" fit="fit"/>
+      </div>
+    </div>
+    <el-card class="box-card" style="width: 225px">
+      <el-col>
+        <div style="min-height: 50px;"></div>
+        <input type="file" accept="image/*" style="width: 175px;" @change="handlePhotoUpload">
+        <div style="min-height: 20px;"></div>
+        <el-button type="primary" @click="uploadImage">Upload Image</el-button>
+      </el-col>
+    </el-card>
+  </el-row>
+  
   <el-row justify="space-around">
     <el-space warp>
       <el-card class="box-card" style="width: 1250px">
@@ -32,10 +49,6 @@
       </el-card>
     </el-space>
   </el-row>
-  <el-row justify="center">
-    <input type="file" accept="image/*" style="width: 175px;" @change="handlePhotoUpload">
-    <el-button type="primary" @click="uploadImage">Upload Image</el-button>
-  </el-row>
 </template>
 
 <script>
@@ -54,14 +67,17 @@
     data() {
       return {
         inputFields,
+        userData: [],
         clientData: [],
         clientBranchData: [],
         clientLoanData: [],
-        clientUrl: 'http://localhost:8000/api/client/?id=',
+        userUrl: 'http://localhost:8000/register/user/?id=',
+        clientUrl: 'http://localhost:8000/api/client_search/?id=',
         clientBranchUrl: 'http://localhost:8000/api/client_branch/?client_id=',
         clientLoanUrl: 'http://localhost:8000/api/client_loan/?client_id=',
         id: null,
-        image: null
+        image: null,
+        imageUrl: ''
       };
     },
     created() {
@@ -70,12 +86,15 @@
     },
     methods: {
       displayClient: async function () {
+        this.userUrl += this.id + '&'
+        this.userData = (await axios.get(this.userUrl)).data
         this.clientUrl += this.id + '&'
         this.clientData = (await axios.get(this.clientUrl)).data
         this.clientBranchUrl += this.id + '&'
         this.clientBranchData = (await axios.get(this.clientBranchUrl)).data
         this.clientLoanUrl += this.id + '&'
         this.clientLoanData = (await axios.get(this.clientLoanUrl)).data
+        this.imageUrl = this.userData[0].photo
       },
       handlePhotoUpload(event) {
         this.image = event.target.files[0];
@@ -102,3 +121,24 @@
   }
 
 </script>
+
+<style scoped>
+.demo-image .block {
+  padding: 20px 0;
+  text-align: center;
+  border-right: solid 1px var(--el-border-color);
+  display: inline-block;
+  width: 100%;
+  box-sizing: border-box;
+  vertical-align: top;
+}
+.demo-image .block:last-child {
+  border-right: none;
+}
+.demo-image .demonstration {
+  display: block;
+  color: var(--el-text-color-secondary);
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+</style>
