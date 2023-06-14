@@ -21,6 +21,7 @@
 </template>
 
 <script>
+
 import axios from "axios"
 import {ElMessage} from "element-plus"
 
@@ -62,6 +63,7 @@ export default {
 
     register() {
       let data = {}
+      inputFields.forEach(field => data[field.name] = field.inputRef)
       axios.post('http://localhost:8000/register/user/register/', data)
         .then(response => {
           if(response.status === 201) {

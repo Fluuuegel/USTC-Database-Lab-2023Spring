@@ -1,22 +1,40 @@
 import pandas as pd
-from api.models import Account
-from api.models import Staff
-from api.models import Client
-from api.models import Branch
-from api.models import Client_Branch
+from api.models import *
 
 def run():
-    ## Insert client_branch
-    data = pd.read_csv("./data/client_branch.csv", chunksize=15, header=None)
+    ## Insert loan
+    # data = pd.read_csv("./data/loan.csv", chunksize=15, header=None)
+    # for items in data:
+    #     for item in items.values:
+    #         obj = Loan.objects.filter(id=item[0], total=item[1], balance=item[2], release_date=item[3], branch_name=item[4], staff_id=item[5])
+    #         if not obj:
+    #             branch = Branch.objects.get(name=item[4])
+    #             staff = Staff.objects.get(id=item[5])
+    #             o = Loan.objects.create(id=item[0], total=item[1], balance=item[2], release_date=item[3], branch_name=branch, staff_id=staff)
+    #             o.save()
+
+    ## Insert client_loan
+    data = pd.read_csv("./data/client_loan.csv", chunksize=15, header=None)
     for items in data:
         for item in items.values:
-            obj = Client_Branch.objects.filter(client_id=item[0], branch_name=item[1], account_id=item[2])
+            obj = Client_Loan.objects.filter(client_id=item[0], loan_id=item[1], status=item[2])
             if not obj:
                 client = Client.objects.get(id=item[0])
-                branch = Branch.objects.get(name=item[1])
-                account = Account.objects.get(id=item[2])
-                o = Client_Branch.objects.create(client_id=client, branch_name=branch, account_id=account)
+                loan = Loan.objects.get(id=item[1])
+                o = Client_Loan.objects.create(client_id=client, loan_id=loan, status=item[2])
                 o.save()
+    
+    ## Insert client_branch
+    # data = pd.read_csv("./data/client_branch.csv", chunksize=15, header=None)
+    # for items in data:
+    #     for item in items.values:
+    #         obj = Client_Branch.objects.filter(client_id=item[0], branch_name=item[1], account_id=item[2])
+    #         if not obj:
+    #             client = Client.objects.get(id=item[0])
+    #             branch = Branch.objects.get(name=item[1])
+    #             account = Account.objects.get(id=item[2])
+    #             o = Client_Branch.objects.create(client_id=client, branch_name=branch, account_id=account)
+    #             o.save()
 
     ## Insert account
     # data = pd.read_csv("account.csv", chunksize=15, header=None)

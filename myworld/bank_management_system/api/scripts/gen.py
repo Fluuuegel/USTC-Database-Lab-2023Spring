@@ -5,6 +5,22 @@ class Gen:
     def __init__(self):
         self.fake = faker.Faker(locale='ja_JP')
 
+    def loan(self, num):
+        data = ""
+
+        branchs = ["東京銀行", "奈良銀行", "大阪銀行"]
+        staffs = ["173-25-1480", "067-84-8258", "141-66-1428", "652-98-0341", "718-98-9270"]
+
+        for _ in range(num):
+            id = random.randint(100, 999)
+            total = float(random.randint(0, 100000))
+            balance = total
+            release_date = self.fake.date_time_between(start_date='-1m', end_date='now', tzinfo=None)
+            branch_name = branchs[random.randint(0,2)]
+            staff_id = staffs[random.randint(0, 4)]
+            data += f"{id},{total},{balance},{release_date},{branch_name},{staff_id}\n"
+        return data
+
     def staff(self, num):
         data = ""
         for _ in range(num):
@@ -53,8 +69,8 @@ class Gen:
 if __name__ == "__main__":
     g = Gen()
 
-    data = g.account(15)
-    with open("../../data/account.csv", "w") as f:
+    data = g.loan(15)
+    with open("../../data/loan.csv", "w") as f:
         f.write(data)
 
 

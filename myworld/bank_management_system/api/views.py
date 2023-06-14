@@ -190,8 +190,10 @@ class LoanViewSet(viewsets.ModelViewSet):
         loan.balance = balance
 
         # trigger
-        if(balance == 0):
-            status = 1
+        if int(float(balance)) == 0:
+            client_loan = Client_Loan.objects.get(loan_id=loan.id)
+            client_loan.status = 1
+            client_loan.save()
 
         try:
             loan.save()
@@ -208,8 +210,7 @@ class LoanViewSet(viewsets.ModelViewSet):
 
         try:
             client_loan = Client_Loan.objects.get(loan_id=loan.id)
-            client_loan.loan_id = None
-            client_loan.save()
+            client_loan.delete()
         except Client_Branch.DoesNotExist or IntegrityError:
             transaction.savepoint_rollback(foo)
             return Response(status=status.HTTP_400_BAD_REQUEST, data='Failed to delete foreign key in client_loan')
@@ -251,7 +252,7 @@ class ClientLoanViewSet(viewsets.ModelViewSet):
         if not (client_id and total and branch_name):
             return Response(status=status.HTTP_400_BAD_REQUEST, data='Parameter incomplete')
 
-        if not (total <= 0):
+        if not (float(total) > 0):
             return Response(status=status.HTTP_400_BAD_REQUEST, data='Total must be positive')
         
         try:
@@ -273,12 +274,6 @@ class ClientLoanViewSet(viewsets.ModelViewSet):
 
         foo = transaction.savepoint()
 
-        try:
-            client_loan = Client_Loan.objects.create(client_id=client)
-        except IntegrityError:
-            transaction.savepoint_rollback(foo)
-            return Response(status=status.HTTP_400_BAD_REQUEST, data='Failed to create client_loan')
-
         loan = None
         for _ in range(10):
             loan_id = str(random.randint(100, 9999))
@@ -297,9 +292,18 @@ class ClientLoanViewSet(viewsets.ModelViewSet):
         if not loan:
             transaction.savepoint_rollback(foo)
             return Response(status=status.HTTP_400_BAD_REQUEST, data='Failed to create loan')
+        
+        try:
+            client_loan = Client_Loan.objects.get(client_id=client, loan_id=loan)
+        except Client_Loan.DoesNotExist:
+            try:
+                client_loan = Client_Loan.objects.create(client_id=client, loan_id=loan)
+            except IntegrityError:   
+                transaction.savepoint_rollback(foo)
+                return Response(status=status.HTTP_400_BAD_REQUEST, data='Failed to create client_loan')
 
         try:
-            client_loan.loan_id = loan
+            loan.save()
             client_loan.status = 0
             client_loan.save()
             transaction.savepoint_commit(foo)

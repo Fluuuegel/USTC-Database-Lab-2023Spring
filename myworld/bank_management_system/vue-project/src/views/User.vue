@@ -52,6 +52,7 @@
 </template>
 
 <script>
+
   import axios from "axios"
   import {ElMessage} from "element-plus"
 
@@ -87,7 +88,7 @@
     methods: {
       displayClient: async function () {
         this.userUrl += this.id + '&'
-        this.userData = (await axios.get(this.userUrl)).data
+        this.userData = (await axios.get(this.userUrl)).data.filter(id=>id.id==this.id)
         this.clientUrl += this.id + '&'
         this.clientData = (await axios.get(this.clientUrl)).data
         this.clientBranchUrl += this.id + '&'
