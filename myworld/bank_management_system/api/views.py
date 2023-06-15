@@ -106,6 +106,37 @@ class ClientViewSet(viewsets.ModelViewSet) :
         
         transaction.savepoint_commit(foo)
         return Response(status=status.HTTP_204_NO_CONTENT)
+    
+    # update 
+    # def update(self, request, *args, **kwargs):
+    #     id = request.data.get('id')
+    #     name = request.data.get('name')
+    #     phone_number = request.data.get('phone_number')
+    #     address = request.data.get('address')
+    #     mail = request.data.get('mail')
+    #     contact_name = request.data.get('contact_name')
+    #     contact_phone_numebr = request.data.get('contact_phone_number')
+    #     contact_relationship = request.data.get('contact_relationship')
+
+    #     if id:
+    #         try:
+    #             client = Client.objects.get(id=id)
+    #         except Client.DoesNotExist:
+    #             return Response(status=status.HTTP_400_BAD_REQUEST, data='Wrong id')
+
+    #     client.name = name
+    #     client.phone_number = phone_number
+    #     client.address = address
+    #     client.mail = mail
+    #     client.contact_name = contact_name
+    #     client.contact_phone_number = contact_phone_numebr
+    #     client.contact_relationship = contact_relationship
+
+    #     try:
+    #         client.save()
+    #         return Response(status=status.HTTP_200_OK)
+    #     except IntegrityError:
+    #         return Response(status=status.HTTP_400_BAD_REQUEST, data='Update failed')
 
 class AccountViewSet(viewsets.ModelViewSet):
     queryset = Account.objects.all()

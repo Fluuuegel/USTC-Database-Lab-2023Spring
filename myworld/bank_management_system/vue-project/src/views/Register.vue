@@ -1,6 +1,6 @@
 <template>
   <el-row justify="space-around">
-    <div style="min-height: 25px">The Great Bank</div>
+    <div style="min-height: 25px"></div>
   </el-row>
   <el-row justify="space-around">
     <el-space warp>

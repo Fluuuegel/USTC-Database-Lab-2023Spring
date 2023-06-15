@@ -72,7 +72,7 @@
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="addClient">Add</el-button>
-            <el-button type="warning">Update</el-button>
+            <el-button type="warning" @click="updateClient">Update</el-button>
           </el-form-item>
         </el-form>
       </el-card>
